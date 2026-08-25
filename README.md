@@ -1,0 +1,307 @@
+# O Bosque Fantasma — TCG
+
+Tema WordPress com WooCommerce para loja de **Pokémon TCG**, inspirado em
+**Celebi** (floresta / tempo / mint) e **Gengar** (sombra / fantasma / roxo).
+Atmosfera escura, mística e premium — sem cartoon.
+
+> **"Entre nas sombras da nossa floresta mágica e descubra um refúgio
+> exclusivo para colecionadores e jogadores."**
+
+---
+
+- **Autora:** Dilaine Ferreira de Oliveira
+- **GitHub:** [@DiOliver-cmd](https://github.com/DiOliver-cmd)
+- **Repositório:** [O-Bosque-Fantasma-TCG](https://github.com/DiOliver-cmd/O-Bosque-Fantasma-TCG)
+- **Versão:** 1.0.0
+- **Requer WordPress:** 6.0+
+- **Requer PHP:** 7.4+
+- **WooCommerce:** 8.x
+- **Idioma:** pt-BR
+
+© 2026 Dilaine Ferreira de Oliveira. Todos os direitos reservados.
+
+---
+
+## Índice
+
+1. [Visão geral](#visão-geral)
+2. [Instalação](#instalação)
+3. [Configurar a página inicial](#configurar-a-página-inicial)
+4. [Configurar menus](#configurar-menus)
+5. [Categorias de produto](#categorias-de-produto)
+6. [Adicionar produtos](#adicionar-produtos)
+7. [Importar inventário via CSV](#importar-inventário-via-csv)
+8. [Plugins recomendados](#plugins-recomendados)
+9. [Personalizar a paleta](#personalizar-a-paleta)
+10. [Estrutura de arquivos](#estrutura-de-arquivos)
+11. [Acessibilidade e responsividade](#acessibilidade-e-responsividade)
+12. [Solução de problemas](#solução-de-problemas)
+13. [Changelog](#changelog)
+
+---
+
+## Visão geral
+
+**O Bosque Fantasma** é uma loja de Pokémon TCG com identidade visual mística
+que mistura floresta (Celebi) e sombra (Gengar). O tema é construído para
+WooCommerce 8.x e inclui:
+
+- Landing page com hero atmosférico (névoa animada, anéis místicos)
+- Grid de produtos em destaque com cards estilizados
+- Categorias baseadas no inventário real (ETB, Displays, Blisters, Boxes,
+  Decks, Acessórios)
+- Página de produto único com galeria e detalhes
+- Campos customizados por produto: Condição, Set/Coleção, Número, Idioma
+- Header sticky com logo, navegação, busca e carrinho
+- Footer completo com social, navegação e informações
+- Design system completo via CSS custom properties
+- Mobile-first, responsivo, acessível
+
+### Paleta
+
+| Variável CSS         | Cor       | Uso                         |
+|----------------------|-----------|-----------------------------|
+| `--celebi-mint`      | `#43C6A1` | Verde principal (Celebi)    |
+| `--psychic-purple`   | `#7E308A` | Roxo principal (Gengar)     |
+| `--shadow-black`     | `#212121` | Fundo escuro                |
+| `--gastly-grey`      | `#777777` | Texto secundário            |
+| `--celebi-green`     | `#80E0A8` | Verde claro (detalhes)      |
+| `--shiny-pink`       | `#E6679E` | Rosa (shiny / acentos)      |
+
+### Tipografia
+
+- **Títulos:** Cinzel (display, serif mística)
+- **Corpo:** Inter (sans-serif, legível)
+
+---
+
+## Instalação
+
+### 1. Instalar o WordPress
+
+- **Local:** [Local by Flywheel](https://localwp.com/) (mais fácil) ou
+  XAMPP/WAMP.
+- **Hospedagem:** a maioria das hospedeiras brasileiras (Hostinger, KingHost,
+  Hostgator) oferece instalação em 1 clique.
+
+Requisitos: PHP 7.4+ (recomendado 8.x), MySQL 5.7+ ou MariaDB 10.3+, HTTPS.
+
+### 2. Instalar o WooCommerce
+
+1. No admin: **Plugins → Adicionar novo**.
+2. Busque por **WooCommerce**.
+3. **Instalar agora** → **Ativar**.
+4. Siga o assistente (país: Brasil, moeda: BRL).
+
+### 3. Ativar o tema
+
+1. Compacte a pasta do tema em `.zip`.
+2. **Aparência → Temas → Adicionar novo → Enviar tema**.
+3. Ative **O Bosque Fantasma**.
+4. (Opcional) **Aparência → Personalizar → Identidade do site**:
+   - Título: "O Bosque Fantasma".
+   - Envie o logo (PNG/SVG, ~240×80 px). Se não enviar, o tema usa o logo
+     padrão em `assets/images/logo.jfif`.
+
+---
+
+## Configurar a página inicial
+
+O tema usa `front-page.php` como landing page. Para ativá-la:
+
+1. Crie uma página **Início** (conteúdo vazio).
+2. **Configurações → Leitura** → "Uma página estática" → **Início**.
+3. A landing aparece com: hero, coleção em destaque, categorias, sobre o
+   bosque e newsletter.
+
+> A seção "Coleção em destaque" mostra produtos marcados como **Destaque**.
+> Se não houver, exibe os mais recentes.
+
+---
+
+## Configurar menus
+
+1. **Aparência → Menus**.
+2. Crie o menu **Principal** com: Início, Loja, ETB, Displays, Sobre, Contato.
+3. Atribua nos locais:
+   - **Menu Principal** → `primary`
+   - **Menu do Rodapé** → `footer`
+   - **Menu Social** → `social` (Instagram, YouTube, Discord).
+
+---
+
+## Categorias de produto
+
+Crie em **Produtos → Categorias** com os slugs abaixo para os cards da home
+linkarem corretamente:
+
+| Nome        | Slug                  |
+|-------------|-----------------------|
+| ETB         | `etb`                 |
+| Displays    | `display-de-booster`  |
+| Blisters    | `blister`             |
+| Boxes       | `box`                 |
+| Decks       | `deck`                |
+| Acessórios  | `acessorio`           |
+
+---
+
+## Adicionar produtos
+
+1. **Produtos → Adicionar novo**.
+2. Preencha nome, descrição e preço.
+3. Envie a imagem do produto (800×1120 px, proporção 3:4).
+4. Na meta box **"Dados da Carta Pokémon TCG"**, preencha:
+
+   | Campo        | Tipo    | Valores                                              |
+   |--------------|---------|------------------------------------------------------|
+   | Condição     | Select  | Mint, Near Mint, Lightly Played, Played, Heavily Played |
+   | Set/Coleção  | Texto   | Ex: "Escuridão Absoluta (ME05)"                      |
+   | Número       | Texto   | Ex: "045/091"                                        |
+   | Idioma       | Select  | Português, Inglês, Japonês                           |
+
+5. Defina preço, estoque em **Dados do produto**.
+6. Marque **Destaque** (estrela) para aparecer na home.
+7. **Publicar**.
+
+### Onde os campos aparecem
+
+- **Card de produto:** linha "Coleção · Número" sob o nome.
+- **Página do produto:** bloco "Dados da carta" acima do botão de compra.
+
+---
+
+## Importar inventário via CSV
+
+O arquivo `_private/importacao-woocommerce.csv` contém os produtos do
+inventário prontos para importação:
+
+1. **WooCommerce → Produtos → Importar**.
+2. Envie o arquivo CSV.
+3. Mapeie as colunas (o arquivo já segue o padrão WooCommerce).
+4. Execute a importação.
+
+> O CSV inclui: SKU, nome, descrição, preço regular, estoque, categorias e
+> URL das imagens. Produtos sem estoque são importados como rascunho.
+
+---
+
+## Plugins recomendados
+
+- **WooCommerce** (obrigatório) — e-commerce.
+- **PagSeguro WooCommerce** ou **WooCommerce Payments** — gateways BR.
+- **Correios for WooCommerce** (Link Nacional) — frete nacional.
+- **Yoast SEO** ou **Rank Math** — SEO.
+- **MailPoet** ou **Mailchimp for WooCommerce** — newsletter.
+- **WP Rocket** ou **LiteSpeed Cache** — performance.
+- **Smush** ou **ShortPixel** — otimização de imagens.
+
+---
+
+## Personalizar a paleta
+
+Toda a paleta vive como CSS custom properties no `:root` de `style.css`:
+
+```css
+:root {
+    --celebi-mint:     #43C6A1;
+    --psychic-purple:  #7E308A;
+    --shadow-black:    #212121;
+    --gastly-grey:     #777777;
+    --celebi-green:    #80E0A8;
+    --shiny-pink:      #E6679E;
+}
+```
+
+Para mudar o tema inteiro, edite esses valores. Para não mexer no tema,
+crie um tema filho (`o-bosque-fantasma-child/`) sobrescrevendo apenas as
+variáveis.
+
+---
+
+## Estrutura de arquivos
+
+```
+o-bosque-fantasma/
+├── style.css                      # Design system (fonte única de verdade)
+├── functions.php                  # Setup, enqueue, meta boxes TCG, WC hooks
+├── front-page.php                 # Landing page
+├── header.php                     # Cabeçalho sticky + nav + cart + busca
+├── footer.php                     # Rodapé + menus + social
+├── index.php                      # Blog / fallback
+├── page.php                       # Página estática
+├── single.php                     # Post único
+├── searchform.php                 # Form de busca compacto
+├── 404.php                        # "Você se perdeu no bosque..."
+├── comments.php                   # Comentários
+├── README.md                      # Este arquivo
+├── .gitignore
+├── assets/
+│   ├── css/
+│   ├── images/
+│   │   └── logo.jfif             # Logo do site
+│   └── js/
+│       └── main.js               # Sticky, menu mobile, parallax, reveal, cart
+├── template-parts/
+│   ├── product-card.php           # Card reutilizável de produto
+│   └── section-featured.php       # Seção de destaques da home
+├── woocommerce/
+│   ├── archive-product.php        # Loja (WC 8.x)
+│   ├── single-product.php         # Produto único (WC 8.x)
+│   └── content-product.php        # Item da lista (delega para product-card)
+└── _private/                      # (gitignored — não sobe para o repo)
+    ├── inventario_bosque_fantasma_completo.xlsx
+    ├── importacao-woocommerce.csv
+    └── RETOMADA-TRABALHO.md       # Contexto para retomar o trabalho
+```
+
+---
+
+## Acessibilidade e responsividade
+
+- **Mobile-first** com breakpoints em 768px e 1024px.
+- HTML semântico (`header`, `main`, `nav`, `footer`, `article`).
+- Contraste de texto **AA** (`#f4f4f5` sobre `#212121`).
+- `skip-link` para pular ao conteúdo.
+- `aria-label`, `aria-expanded`, `alt` em imagens.
+- Respeita `prefers-reduced-motion`.
+- Foco visível em formulários e links.
+
+---
+
+## Solução de problemas
+
+**A home aparece vazia / sem produtos:**
+- Verifique se há produtos publicados e marcados como **Destaque**.
+- Confirme que a página "Início" está em **Configurações → Leitura**.
+
+**Os campos TCG não aparecem:**
+- Confirme que o WooCommerce está ativo.
+- Salve o produto novamente.
+
+**Os cards de categoria não linkam:**
+- Crie as categorias com os slugs corretos (ver tabela acima).
+
+**Fontes não carregam:**
+- O tema usa Google Fonts (Cinzel + Inter). Confirme acesso à internet.
+
+---
+
+## Changelog
+
+### v1.0.0 — 25/08/2026
+- Tema WordPress + WooCommerce 8.x criado
+- Design system completo com paleta Celebi/Gengar
+- Landing page com hero, produtos em destaque, categorias, sobre, newsletter
+- Campos customizados de produto: Condição, Set, Número, Idioma
+- Templates WooCommerce: archive, single product, content-product
+- Header sticky com logo, busca, carrinho
+- Footer com social, navegação, ajuda
+- CSV de importação com 26 produtos do inventário
+- Logo integrado
+- Screenshots de preview gerados
+
+---
+
+**Feito com sombra e floresta.**
+© 2026 Dilaine Ferreira de Oliveira. Todos os direitos reservados.
