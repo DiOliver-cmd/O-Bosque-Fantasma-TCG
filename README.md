@@ -31,12 +31,13 @@ Atmosfera escura, mística e premium — sem cartoon.
 5. [Categorias de produto](#categorias-de-produto)
 6. [Adicionar produtos](#adicionar-produtos)
 7. [Importar inventário via CSV](#importar-inventário-via-csv)
-8. [Plugins recomendados](#plugins-recomendados)
-9. [Personalizar a paleta](#personalizar-a-paleta)
-10. [Estrutura de arquivos](#estrutura-de-arquivos)
-11. [Acessibilidade e responsividade](#acessibilidade-e-responsividade)
-12. [Solução de problemas](#solução-de-problemas)
-13. [Changelog](#changelog)
+8. [Páginas do site](#páginas-do-site)
+9. [Plugins recomendados](#plugins-recomendados)
+10. [Personalizar a paleta](#personalizar-a-paleta)
+11. [Estrutura de arquivos](#estrutura-de-arquivos)
+12. [Acessibilidade e responsividade](#acessibilidade-e-responsividade)
+13. [Solução de problemas](#solução-de-problemas)
+14. [Changelog](#changelog)
 
 ---
 
@@ -186,6 +187,25 @@ inventário prontos para importação:
 
 ---
 
+## Páginas do site
+
+O tema inclui **custom page templates** prontos para uso. Crie uma página em
+**Páginas → Adicionar nova** e selecione o template em **Atributos de página**:
+
+| Página                | Template              | Descrição                                    |
+|-----------------------|-----------------------|----------------------------------------------|
+| Sobre o Bosque        | `Sobre o Bosque`      | História, pilares, categorias, autenticidade |
+| Políticas de Envio    | `Políticas de Envio`  | Prazos, frete, rastreamento, embalagem       |
+| Trocas e Devoluções   | `Trocas e Devoluções` | Política de 7 dias, condições, reembolso     |
+| Contato               | `Contato`             | Formulário, redes sociais, horário           |
+
+> **Formulário de contato:** o template inclui um formulário estilizado que
+> post para `admin-post.php`. Para ativá-lo, registre um handler
+> `admin_post_nopriv_obf_contato` em `functions.php`, ou substitua o bloco
+> `<form>` por um shortcode do **Contact Form 7**.
+
+---
+
 ## Plugins recomendados
 
 - **WooCommerce** (obrigatório) — e-commerce.
@@ -288,6 +308,18 @@ o-bosque-fantasma/
 ---
 
 ## Changelog
+
+### v1.1.0 — 25/08/2026
+- Página "Sobre o Bosque": história, pilares (autenticidade, curadoria,
+  transparência, comunidade), categorias, processo de verificação, CTA
+- Página de produto único polida: breadcrumbs místicos, layout duas colunas,
+  título com gradiente, trust badges (autêntico, envio, verificado, suporte),
+  tabs estilizadas, relacionados com heading gradiente
+- Página "Políticas de Envio": prazos por região, frete, rastreamento, embalagem
+- Página "Trocas e Devoluções": política 7 dias, condições, procedimento 3 passos
+- Página "Contato": métodos de contato (Instagram, e-mail, Discord), formulário
+  estilizado, horário de atendimento
+- CSS: 3 novos blocos organizados (Sobre, Single product, Institutional)
 
 ### v1.0.0 — 25/08/2026
 - Tema WordPress + WooCommerce 8.x criado

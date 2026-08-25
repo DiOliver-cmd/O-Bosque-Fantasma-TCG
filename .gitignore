@@ -6,8 +6,7 @@
 _private/
 
 # Screenshots / previews visuais
-screenshot.png
-screenshot-viewport.png
+screenshot*.png
 *-preview.png
 
 # Inventário e dados de importação (contém preços/custos)
