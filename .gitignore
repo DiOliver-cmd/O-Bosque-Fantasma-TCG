@@ -4,6 +4,7 @@
 
 # Arquivos privados (não subir para o repositório)
 _private/
+_docker/
 
 # Screenshots / previews visuais
 screenshot*.png

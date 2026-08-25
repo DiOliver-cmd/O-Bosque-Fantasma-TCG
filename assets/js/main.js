@@ -146,4 +146,103 @@
         });
     }
 
+    /* ---------- Nav dropdown (Loja) ---------- */
+    // Toggle the .nav-dropdown panel on click (all breakpoints), on hover
+    // (desktop only), and close on outside click / Escape.
+    var dropdownParents = document.querySelectorAll('.nav-item--has-dropdown');
+    var isDesktop = function () {
+        return window.matchMedia('(min-width: 769px)').matches;
+    };
+
+    function closeDropdown(parent) {
+        if (!parent) { return; }
+        parent.classList.remove('is-open');
+        var trigger = parent.querySelector('.nav-item__trigger');
+        if (trigger) { trigger.setAttribute('aria-expanded', 'false'); }
+    }
+
+    function openDropdown(parent) {
+        if (!parent) { return; }
+        // Close any other open dropdown first.
+        dropdownParents.forEach(function (other) {
+            if (other !== parent) { closeDropdown(other); }
+        });
+        parent.classList.add('is-open');
+        var trigger = parent.querySelector('.nav-item__trigger');
+        if (trigger) { trigger.setAttribute('aria-expanded', 'true'); }
+    }
+
+    function toggleDropdown(parent) {
+        if (parent.classList.contains('is-open')) {
+            closeDropdown(parent);
+        } else {
+            openDropdown(parent);
+        }
+    }
+
+    dropdownParents.forEach(function (parent) {
+        var trigger = parent.querySelector('.nav-item__trigger');
+        if (!trigger) { return; }
+
+        // Click toggle (works on touch and mouse).
+        trigger.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleDropdown(parent);
+        });
+
+        // Desktop: open on hover, close on leave.
+        parent.addEventListener('mouseenter', function () {
+            if (isDesktop()) { openDropdown(parent); }
+        });
+        parent.addEventListener('mouseleave', function () {
+            if (isDesktop()) { closeDropdown(parent); }
+        });
+
+        // Keyboard: Enter / Space handled by <button> natively (click fires).
+        // Focus-within keeps it open while tabbing through items.
+        parent.addEventListener('focusin', function () {
+            if (isDesktop()) { openDropdown(parent); }
+        });
+        parent.addEventListener('focusout', function (e) {
+            // Only close if focus leaves the parent entirely.
+            if (!parent.contains(e.relatedTarget)) {
+                closeDropdown(parent);
+            }
+        });
+    });
+
+    // Close when clicking outside any dropdown.
+    document.addEventListener('click', function (e) {
+        dropdownParents.forEach(function (parent) {
+            if (parent.classList.contains('is-open') && !parent.contains(e.target)) {
+                closeDropdown(parent);
+            }
+        });
+    });
+
+    // Close on Escape.
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            dropdownParents.forEach(function (parent) {
+                if (parent.classList.contains('is-open')) {
+                    closeDropdown(parent);
+                    var trigger = parent.querySelector('.nav-item__trigger');
+                    if (trigger) { trigger.focus(); }
+                }
+            });
+        }
+    });
+
+    // Reset dropdown state when the mobile menu closes (so it doesn't
+    // reopen unexpectedly on the next toggle).
+    if (primaryNav) {
+        var navObserver = new MutationObserver(function () {
+            if (!primaryNav.classList.contains('is-open')) {
+                dropdownParents.forEach(closeDropdown);
+            }
+        });
+        navObserver.observe(primaryNav, { attributes: true, attributeFilter: ['class'] });
+    }
+
 })();

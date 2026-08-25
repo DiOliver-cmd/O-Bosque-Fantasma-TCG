@@ -309,6 +309,20 @@ o-bosque-fantasma/
 
 ## Changelog
 
+### v1.2.0 — 25/08/2026
+- Header redesenhado: 3 itens (Início, Sobre, Loja) com dropdown de categorias
+- Dropdown "Loja": Ver tudo + ETB, Displays, Blisters, Boxes, Decks, Acessórios
+- JS: toggle do dropdown (click + hover desktop + teclado)
+- CSV atualizado: 26 produtos mapeados às 6 categorias corretas
+- Página "Políticas de Envio" reescrita com dados reais dos Correios:
+  - Tabela de prazos por região (PAC + SEDEX) com margem +2 dias úteis
+  - Tabela de valores médios de frete por região
+  - Mini Envios para itens leves
+- Ambiente Docker local: WordPress + MySQL + WooCommerce rodando
+- Scripts: start.sh, stop.sh, reset.sh
+- 26 produtos importados, 8 marcados como destaque
+- 4 páginas criadas com templates ativos
+
 ### v1.1.0 — 25/08/2026
 - Página "Sobre o Bosque": história, pilares (autenticidade, curadoria,
   transparência, comunidade), categorias, processo de verificação, CTA
