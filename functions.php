@@ -90,11 +90,11 @@ function obf_scripts() {
         null
     );
 
-    // Main stylesheet (single source of truth).
-    wp_enqueue_style( 'obf-style', get_stylesheet_uri(), array( 'obf-google-fonts' ), OBF_VERSION );
+    // Main stylesheet (single source of truth) — version dinâmica para quebrar cache.
+    wp_enqueue_style( 'obf-style', get_stylesheet_uri(), array( 'obf-google-fonts' ), filemtime( OBF_DIR . '/style.css' ) );
 
     // Main script.
-    wp_enqueue_script( 'obf-main', OBF_URI . '/assets/js/main.js', array(), OBF_VERSION, true );
+    wp_enqueue_script( 'obf-main', OBF_URI . '/assets/js/main.js', array(), filemtime( OBF_DIR . '/assets/js/main.js' ), true );
 
     if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
         wp_enqueue_script( 'comment-reply' );
