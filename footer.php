@@ -77,10 +77,10 @@
             <div class="widget">
                 <h4><?php esc_html_e( 'Ajuda', 'o-bosque-fantasma' ); ?></h4>
                 <ul>
-                    <li><a href="#"><?php esc_html_e( 'Envios e prazos', 'o-bosque-fantasma' ); ?></a></li>
-                    <li><a href="#"><?php esc_html_e( 'Trocas e devoluções', 'o-bosque-fantasma' ); ?></a></li>
-                    <li><a href="#"><?php esc_html_e( 'Autenticidade', 'o-bosque-fantasma' ); ?></a></li>
-                    <li><a href="#"><?php esc_html_e( 'Contato', 'o-bosque-fantasma' ); ?></a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/politicas-de-envio/' ) ); ?>"><?php esc_html_e( 'Envios e prazos', 'o-bosque-fantasma' ); ?></a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/trocas-e-devolucoes/' ) ); ?>"><?php esc_html_e( 'Trocas e devoluções', 'o-bosque-fantasma' ); ?></a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/sobre/' ) ); ?>#autenticidade"><?php esc_html_e( 'Autenticidade', 'o-bosque-fantasma' ); ?></a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/contato/' ) ); ?>"><?php esc_html_e( 'Contato', 'o-bosque-fantasma' ); ?></a></li>
                 </ul>
             </div>
 

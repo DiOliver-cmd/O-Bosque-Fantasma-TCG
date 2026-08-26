@@ -700,6 +700,33 @@ label {
     left: var(--space-3);
     z-index: 2;
 }
+.product-card__sold-out {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    z-index: 2;
+    background: rgba(230, 103, 158, 0.92);
+    color: #fff;
+    border: 1px solid var(--shiny-pink);
+    box-shadow: var(--shadow-glow-pink);
+    font-size: var(--fs-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 4px var(--space-3);
+    border-radius: var(--radius-pill);
+}
+.product-card__price--hidden {
+    font-family: var(--font-body);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    font-style: italic;
+}
+.product-card.outofstock .product-card__media {
+    opacity: 0.65;
+}
+.product-card.outofstock .product-card__media img {
+    filter: grayscale(0.3);
+}
 .product-card__body {
     padding: var(--space-4);
     display: flex;

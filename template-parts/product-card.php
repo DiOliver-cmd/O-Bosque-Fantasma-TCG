@@ -25,6 +25,7 @@ $obf_title     = $product->get_name();
 $obf_set       = get_post_meta( $obf_id, '_obf_set', true );
 $obf_numero    = get_post_meta( $obf_id, '_obf_numero', true );
 $obf_meta_line = array_filter( array( $obf_set, $obf_numero ) );
+$obf_in_stock  = $product->is_in_stock();
 ?>
 
 <article <?php wc_product_class( 'product-card', $product ); ?> data-product-id="<?php echo esc_attr( $obf_id ); ?>">
@@ -41,6 +42,10 @@ $obf_meta_line = array_filter( array( $obf_set, $obf_numero ) );
             echo '</a>';
         }
         ?>
+
+        <?php if ( ! $obf_in_stock ) : ?>
+            <span class="product-card__sold-out badge"><?php esc_html_e( 'Esgotado', 'o-bosque-fantasma' ); ?></span>
+        <?php endif; ?>
     </div>
 
     <div class="product-card__body">
@@ -52,9 +57,13 @@ $obf_meta_line = array_filter( array( $obf_set, $obf_numero ) );
             <p class="product-card__meta"><?php echo esc_html( implode( ' · ', $obf_meta_line ) ); ?></p>
         <?php endif; ?>
 
+        <?php if ( $obf_in_stock ) : ?>
         <div class="product-card__price">
             <?php echo $product->get_price_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
         </div>
+        <?php else : ?>
+        <div class="product-card__price product-card__price--hidden"><?php esc_html_e( 'Preço sob consulta', 'o-bosque-fantasma' ); ?></div>
+        <?php endif; ?>
 
         <div class="product-card__footer">
             <?php
