@@ -1612,10 +1612,12 @@ ul.products li.product .button:hover { box-shadow: var(--shadow-glow-mint); colo
     border-color: rgba(67, 198, 161, 0.4);
     box-shadow: var(--shadow-card), 0 0 24px -16px var(--accent-mint);
 }
+.policy-block--full {
+    grid-column: 1 / -1;
+}
 .policy-block h2 {
     font-size: var(--fs-lg);
     margin-bottom: var(--space-3);
-    color: var(--accent-mint);
 }
 .policy-block p { margin-bottom: var(--space-3); }
 .policy-block p:last-child { margin-bottom: 0; }
@@ -1630,7 +1632,7 @@ ul.products li.product .button:hover { box-shadow: var(--shadow-glow-mint); colo
 }
 .policy-table th,
 .policy-table td {
-    padding: var(--space-3) var(--space-4);
+    padding: var(--space-2) var(--space-3);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     text-align: left;
     font-size: var(--fs-sm);
@@ -1654,7 +1656,6 @@ ul.products li.product .button:hover { box-shadow: var(--shadow-glow-mint); colo
 }
 .policy-table-wrap .policy-table {
     margin-top: 0;
-    min-width: 480px;
 }
 
 /* Realce sutil ao passar o cursor sobre as linhas */

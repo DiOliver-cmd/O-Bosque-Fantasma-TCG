@@ -39,7 +39,7 @@ if ( $obf_contato_pg && ! is_wp_error( $obf_contato_pg ) ) {
         <div class="policies-grid">
 
             <!-- PRAZOS DE ENTREGA POR REGIÃO -->
-            <div class="policy-block reveal" data-delay="1">
+            <div class="policy-block policy-block--full reveal" data-delay="1">
                 <h2><?php esc_html_e( 'Prazos de entrega', 'o-bosque-fantasma' ); ?></h2>
                 <p>
                     <?php esc_html_e( 'Os prazos abaixo já incluem margem de segurança de +2 dias úteis sobre a estimativa dos Correios. Entregas que abrangem finais de semana podem acrescer até +3 dias.', 'o-bosque-fantasma' ); ?>
@@ -124,7 +124,7 @@ if ( $obf_contato_pg && ! is_wp_error( $obf_contato_pg ) ) {
             </div>
 
             <!-- VALORES MÉDIOS DE FRETE -->
-            <div class="policy-block reveal" data-delay="2">
+            <div class="policy-block policy-block--full reveal" data-delay="2">
                 <h2><?php esc_html_e( 'Valores médios de frete', 'o-bosque-fantasma' ); ?></h2>
                 <p>
                     <?php esc_html_e( 'Valores estimados para pacotes de até 1 kg (ex: blisters, booster packs). Produtos mais pesados como ETBs podem ter frete acima da média. O valor final é calculado no checkout pelo CEP de destino.', 'o-bosque-fantasma' ); ?>
