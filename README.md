@@ -309,6 +309,16 @@ o-bosque-fantasma/
 
 ## Changelog
 
+### v1.3.0 — 26/08/2026
+- Categorias dos 26 produtos corrigidas (ETB:7, Displays:2, Blisters:4,
+  Boxes:5, Decks:3, Acessórios:5)
+- Produtos esgotados visíveis na loja: badge "Esgotado", preço oculto
+  ("Preço sob consulta"), imagem com opacidade/grayscale
+- Links do rodapé corrigidos: Envios, Trocas, Autenticidade, Contato → páginas reais
+- Background dark fantasy: imagem gerada por IA aplicada ao fundo do site
+- Cache busting dinâmico no CSS e JS (filemtime)
+- Tabelas de prazos e valores: largura total, sem scroll horizontal
+
 ### v1.2.0 — 25/08/2026
 - Header redesenhado: 3 itens (Início, Sobre, Loja) com dropdown de categorias
 - Dropdown "Loja": Ver tudo + ETB, Displays, Blisters, Boxes, Decks, Acessórios
