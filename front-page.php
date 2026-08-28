@@ -137,7 +137,36 @@ get_header();
             <p class="lead" style="margin-inline: auto;">
                 <?php esc_html_e( 'Receba alertas de novas cartas, drops de raridades e promoções. Sem spam — só floresta e sombra.', 'o-bosque-fantasma' ); ?>
             </p>
-            <form class="cta-band__form" method="post" action="">
+            <?php
+            /*
+             * Newsletter — handler real via admin-post (action "obf_newsletter").
+             * Implementado em functions.php (obf_handle_newsletter).
+             */
+            $obf_nl_status = isset( $_GET['nl'] ) ? sanitize_key( wp_unslash( $_GET['nl'] ) ) : '';
+
+            if ( 'ok' === $obf_nl_status ) :
+                ?>
+                <div class="obf-feedback obf-feedback--ok" role="status">
+                    <?php esc_html_e( 'Inscrição confirmada! Bem-vindo ao bosque.', 'o-bosque-fantasma' ); ?>
+                </div>
+                <?php
+            elseif ( 'duplicado' === $obf_nl_status ) :
+                ?>
+                <div class="obf-feedback obf-feedback--info" role="status">
+                    <?php esc_html_e( 'Você já está inscrito! Obrigado por fazer parte do bosque.', 'o-bosque-fantasma' ); ?>
+                </div>
+                <?php
+            elseif ( 'erro' === $obf_nl_status ) :
+                ?>
+                <div class="obf-feedback obf-feedback--erro" role="alert">
+                    <?php esc_html_e( 'Não foi possível concluir sua inscrição. Verifique o e-mail informado.', 'o-bosque-fantasma' ); ?>
+                </div>
+                <?php
+            endif;
+            ?>
+            <form class="cta-band__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+                <?php wp_nonce_field( 'obf_newsletter_action', 'obf_newsletter_nonce' ); ?>
+                <input type="hidden" name="action" value="obf_newsletter">
                 <input type="email" name="obf_newsletter_email" placeholder="<?php esc_attr_e( 'Seu e-mail', 'o-bosque-fantasma' ); ?>" required aria-label="<?php esc_attr_e( 'E-mail', 'o-bosque-fantasma' ); ?>">
                 <button type="submit" class="btn btn--primary"><?php esc_html_e( 'Assinar', 'o-bosque-fantasma' ); ?></button>
             </form>

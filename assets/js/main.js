@@ -126,25 +126,10 @@
         mo.observe(countEl, { childList: true, subtree: true, characterData: true });
     }
 
-    /* ---------- Newsletter form (demo, no backend) ---------- */
-    var newsletter = document.querySelector('.cta-band__form');
-    if (newsletter) {
-        newsletter.addEventListener('submit', function (e) {
-            e.preventDefault();
-            var input = newsletter.querySelector('input[type="email"]');
-            var btn = newsletter.querySelector('button[type="submit"]');
-            if (input && input.value && btn) {
-                var original = btn.textContent;
-                btn.textContent = '✓ Inscrito!';
-                btn.disabled = true;
-                input.value = '';
-                setTimeout(function () {
-                    btn.textContent = original;
-                    btn.disabled = false;
-                }, 2400);
-            }
-        });
-    }
+    /* ---------- Newsletter form ----------
+     * O envio real é tratado pelo handler admin-post (action "obf_newsletter")
+     * em functions.php. O feedback é exibido via PHP na própria página.
+     * ---------- */
 
     /* ---------- Nav dropdown (Loja) ---------- */
     // Toggle the .nav-dropdown panel on click (all breakpoints), on hover

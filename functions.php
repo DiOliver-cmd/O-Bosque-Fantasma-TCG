@@ -512,3 +512,240 @@ function obf_excerpt_more( $more ) {
     return '&hellip;';
 }
 add_filter( 'excerpt_more', 'obf_excerpt_more' );
+
+/* ============================================================
+   Newsletter — CPT privado para inscritos
+   ============================================================
+   Optamos por um CPT privado (show_ui=true) em vez de uma option
+   com array de emails, pois:
+   - permite gestão futura no admin (listar, buscar, remover);
+   - escala melhor (options não foram feitas para listas grandes);
+   - habilita query eficiente por email via meta_query;
+   - mantém cada inscrito como um post, com data de criação.
+   ============================================================ */
+
+/**
+ * Registra o CPT obf_inscrito (privado, visível no admin).
+ */
+function obf_register_inscrito_cpt() {
+    register_post_type( 'obf_inscrito', array(
+        'labels'          => array(
+            'name'          => __( 'Newsletter', 'o-bosque-fantasma' ),
+            'menu_name'     => __( 'Newsletter', 'o-bosque-fantasma' ),
+            'singular_name' => __( 'Inscrito', 'o-bosque-fantasma' ),
+            'add_new_item'  => __( 'Adicionar inscrito', 'o-bosque-fantasma' ),
+            'edit_item'     => __( 'Editar inscrito', 'o-bosque-fantasma' ),
+            'search_items'  => __( 'Buscar inscrito', 'o-bosque-fantasma' ),
+            'not_found'     => __( 'Nenhum inscrito encontrado.', 'o-bosque-fantasma' ),
+        ),
+        'public'          => false,
+        'show_ui'         => true,
+        'show_in_menu'    => true,
+        'show_in_rest'    => false,
+        'menu_icon'       => 'dashicons-email-alt',
+        'capability_type' => 'post',
+        'supports'        => array( 'title' ),
+        'has_archive'     => false,
+        'rewrite'         => false,
+        'query_var'       => false,
+    ) );
+}
+add_action( 'init', 'obf_register_inscrito_cpt' );
+
+/**
+ * Define o título do post de inscrito como o email (na listagem do admin).
+ */
+function obf_inscrito_post_title( $data, $postarr ) {
+    if ( 'obf_inscrito' === $data['post_type'] && isset( $_POST['obf_newsletter_email'] ) ) {
+        $email = sanitize_email( wp_unslash( $_POST['obf_newsletter_email'] ) );
+        if ( $email ) {
+            $data['post_title'] = $email;
+        }
+    }
+    return $data;
+}
+add_filter( 'wp_insert_post_data', 'obf_inscrito_post_title', 10, 2 );
+
+/* ============================================================
+   Handler: Formulário de Contato (admin-post)
+   Action: obf_contato
+   ============================================================ */
+
+/**
+ * Processa o formulário de contato enviado via admin-post.php.
+ */
+function obf_handle_contato() {
+    // Referer para redirecionamento de fallback.
+    $referer = wp_get_referer();
+    if ( ! $referer ) {
+        $referer = home_url( '/' );
+    }
+
+    // Validação do nonce.
+    if (
+        ! isset( $_POST['obf_contato_nonce'] ) ||
+        ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['obf_contato_nonce'] ) ), 'obf_contato_action' )
+    ) {
+        wp_safe_redirect( add_query_arg( 'status', 'erro', $referer ) );
+        exit;
+    }
+
+    // Sanitização dos campos.
+    $nome    = isset( $_POST['obf_nome'] ) ? sanitize_text_field( wp_unslash( $_POST['obf_nome'] ) ) : '';
+    $email   = isset( $_POST['obf_email'] ) ? sanitize_email( wp_unslash( $_POST['obf_email'] ) ) : '';
+    $assunto = isset( $_POST['obf_assunto'] ) ? sanitize_text_field( wp_unslash( $_POST['obf_assunto'] ) ) : '';
+    $mensagem = isset( $_POST['obf_mensagem'] ) ? sanitize_textarea_field( wp_unslash( $_POST['obf_mensagem'] ) ) : '';
+
+    // Validação.
+    $erros = array();
+    if ( '' === $nome ) {
+        $erros[] = __( 'Informe seu nome.', 'o-bosque-fantasma' );
+    }
+    if ( ! is_email( $email ) ) {
+        $erros[] = __( 'Informe um e-mail válido.', 'o-bosque-fantasma' );
+    }
+    if ( '' === $mensagem ) {
+        $erros[] = __( 'Escreva uma mensagem.', 'o-bosque-fantasma' );
+    }
+
+    if ( ! empty( $erros ) ) {
+        // Guarda mensagens em transient (5 minutos) e redireciona.
+        set_transient( 'obf_contato_erros_' . COOKIEHASH, $erros, 5 * MINUTE_IN_SECONDS );
+        wp_safe_redirect( add_query_arg( 'status', 'erro', $referer ) );
+        exit;
+    }
+
+    // Monta o e-mail.
+    $admin_email = get_option( 'admin_email' );
+    $site_name   = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+
+    $subject = sprintf(
+        /* translators: %s: assunto informado pelo remetente. */
+        __( '[Contato — %s] Nova mensagem do site', 'o-bosque-fantasma' ),
+        $assunto ? $assunto : $site_name
+    );
+
+    $body  = __( 'Você recebeu uma nova mensagem de contato pelo site:', 'o-bosque-fantasma' ) . "\r\n\r\n";
+    $body .= __( 'Nome:', 'o-bosque-fantasma' ) . ' ' . $nome . "\r\n";
+    $body .= __( 'E-mail:', 'o-bosque-fantasma' ) . ' ' . $email . "\r\n";
+    $body .= __( 'Assunto:', 'o-bosque-fantasma' ) . ' ' . $assunto . "\r\n\r\n";
+    $body .= __( 'Mensagem:', 'o-bosque-fantasma' ) . "\r\n" . $mensagem . "\r\n";
+
+    $headers = array(
+        'Reply-To: ' . $nome . ' <' . $email . '>',
+        'Content-Type: text/plain; charset=UTF-8',
+    );
+
+    $sent = wp_mail( $admin_email, $subject, $body, $headers );
+
+    if ( $sent ) {
+        wp_safe_redirect( add_query_arg( 'status', 'ok', $referer ) );
+    } else {
+        set_transient(
+            'obf_contato_erros_' . COOKIEHASH,
+            array( __( 'Não foi possível enviar a mensagem agora. Tente novamente em instantes.', 'o-bosque-fantasma' ) ),
+            5 * MINUTE_IN_SECONDS
+        );
+        wp_safe_redirect( add_query_arg( 'status', 'erro', $referer ) );
+    }
+    exit;
+}
+add_action( 'admin_post_nopriv_obf_contato', 'obf_handle_contato' );
+add_action( 'admin_post_obf_contato', 'obf_handle_contato' );
+
+/* ============================================================
+   Handler: Newsletter (admin-post)
+   Action: obf_newsletter
+   ============================================================ */
+
+/**
+ * Verifica se um email já está inscrito no CPT obf_inscrito.
+ *
+ * @param string $email Email a verificar.
+ * @return bool True se já existir.
+ */
+function obf_newsletter_email_existe( $email ) {
+    if ( ! $email ) {
+        return false;
+    }
+    $query = new WP_Query( array(
+        'post_type'      => 'obf_inscrito',
+        'post_status'    => 'any',
+        'meta_key'       => 'email',
+        'meta_value'     => $email,
+        'posts_per_page' => 1,
+        'fields'         => 'ids',
+        'no_found_rows'  => true,
+    ) );
+    return $query->have_posts();
+}
+
+/**
+ * Processa a inscrição na newsletter via admin-post.php.
+ */
+function obf_handle_newsletter() {
+    $referer = wp_get_referer();
+    if ( ! $referer ) {
+        $referer = home_url( '/' );
+    }
+
+    // Validação do nonce.
+    if (
+        ! isset( $_POST['obf_newsletter_nonce'] ) ||
+        ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['obf_newsletter_nonce'] ) ), 'obf_newsletter_action' )
+    ) {
+        wp_safe_redirect( add_query_arg( 'nl', 'erro', $referer ) );
+        exit;
+    }
+
+    $email = isset( $_POST['obf_newsletter_email'] ) ? sanitize_email( wp_unslash( $_POST['obf_newsletter_email'] ) ) : '';
+
+    if ( ! is_email( $email ) ) {
+        wp_safe_redirect( add_query_arg( 'nl', 'erro', $referer ) );
+        exit;
+    }
+
+    // Duplicado?
+    if ( obf_newsletter_email_existe( $email ) ) {
+        wp_safe_redirect( add_query_arg( 'nl', 'duplicado', $referer ) );
+        exit;
+    }
+
+    // Salva o inscrito como post do CPT.
+    $post_id = wp_insert_post( array(
+        'post_type'   => 'obf_inscrito',
+        'post_status' => 'publish',
+        'post_title'  => $email,
+    ), true );
+
+    if ( is_wp_error( $post_id ) || ! $post_id ) {
+        wp_safe_redirect( add_query_arg( 'nl', 'erro', $referer ) );
+        exit;
+    }
+
+    update_post_meta( $post_id, 'email', $email );
+    update_post_meta( $post_id, 'ip', sanitize_text_field( $_SERVER['REMOTE_ADDR'] ?? '' ) );
+    update_post_meta( $post_id, 'inscrito_em', current_time( 'mysql' ) );
+
+    // Avisa o administrador.
+    $admin_email = get_option( 'admin_email' );
+    $site_name   = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+
+    $subject = sprintf(
+        /* translators: %s: nome do site. */
+        __( '[%s] Novo inscrito na newsletter', 'o-bosque-fantasma' ),
+        $site_name
+    );
+    $body = sprintf(
+        /* translators: %s: email do novo inscrito. */
+        __( 'Novo inscrito na newsletter: %s', 'o-bosque-fantasma' ),
+        $email
+    ) . "\r\n";
+
+    wp_mail( $admin_email, $subject, $body );
+
+    wp_safe_redirect( add_query_arg( 'nl', 'ok', $referer ) );
+    exit;
+}
+add_action( 'admin_post_nopriv_obf_newsletter', 'obf_handle_newsletter' );
+add_action( 'admin_post_obf_newsletter', 'obf_handle_newsletter' );

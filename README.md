@@ -12,7 +12,7 @@ Atmosfera escura, mística e premium — sem cartoon.
 - **Autora:** Dilaine Ferreira de Oliveira
 - **GitHub:** [@DiOliver-cmd](https://github.com/DiOliver-cmd)
 - **Repositório:** [O-Bosque-Fantasma-TCG](https://github.com/DiOliver-cmd/O-Bosque-Fantasma-TCG)
-- **Versão:** 1.0.0
+- **Versão:** 1.4.0
 - **Requer WordPress:** 6.0+
 - **Requer PHP:** 7.4+
 - **WooCommerce:** 8.x
@@ -199,22 +199,33 @@ O tema inclui **custom page templates** prontos para uso. Crie uma página em
 | Trocas e Devoluções   | `Trocas e Devoluções` | Política de 7 dias, condições, reembolso     |
 | Contato               | `Contato`             | Formulário, redes sociais, horário           |
 
-> **Formulário de contato:** o template inclui um formulário estilizado que
-> post para `admin-post.php`. Para ativá-lo, registre um handler
-> `admin_post_nopriv_obf_contato` em `functions.php`, ou substitua o bloco
-> `<form>` por um shortcode do **Contact Form 7**.
+> **Formulário de contato:** o template envia via `admin-post.php` com handler
+> nativo registrado em `functions.php` (`obf_handle_contato`). Validação,
+> nonce, `wp_mail()` para o admin e feedback visual (sucesso/erro) já
+> incluídos — não precisa de plugin. A newsletter da home também usa handler
+> nativo (`obf_handle_newsletter`) e salva inscritos num CPT privado
+> `obf_inscrito` (menu "Newsletter" no admin).
 
 ---
 
 ## Plugins recomendados
 
 - **WooCommerce** (obrigatório) — e-commerce.
-- **PagSeguro WooCommerce** ou **WooCommerce Payments** — gateways BR.
-- **Correios for WooCommerce** (Link Nacional) — frete nacional.
+- **Brazilian Market on WooCommerce** (`woocommerce-extra-checkout-fields-for-brazil`)
+  — campos BR (CPF/CNPJ, número, bairro) no checkout. Já instalado no ambiente Docker.
+- **PagBank Connect** (`pagbank-connect`) — gateway de pagamento BR (Pix 0,99%,
+  cartão 3,05%, boleto). Sucessor moderno do PagSeguro. Já instalado no Docker;
+  requer conta Vendedor PagBank (PF) + autorização OAuth no admin.
+- **Melhor Envio** (`melhor-envio-cotacao`) — frete BR sem contrato Correios
+  (Correios/Jadlog com desconto, Mini Envios). Já instalado no Docker; requer
+  conta Melhor Envio + token + CEP de origem.
 - **Yoast SEO** ou **Rank Math** — SEO.
-- **MailPoet** ou **Mailchimp for WooCommerce** — newsletter.
 - **WP Rocket** ou **LiteSpeed Cache** — performance.
 - **Smush** ou **ShortPixel** — otimização de imagens.
+
+> **Newsletter e formulário de contato** já são nativos do tema (handlers
+> `admin-post` em `functions.php`) — não precisam de MailPoet/Mailchimp nem
+> Contact Form 7.
 
 ---
 
@@ -308,6 +319,21 @@ o-bosque-fantasma/
 ---
 
 ## Changelog
+
+### v1.4.0 — 28/08/2026
+- Formulário de contato funcional: handler `admin-post` nativo em
+  `functions.php` (`obf_handle_contato`) com nonce, validação, `wp_mail()`
+  para o admin e feedback visual (sucesso/erro) na página de contato
+- Newsletter funcional: handler `admin-post` nativo (`obf_handle_newsletter`)
+  que salva inscritos em CPT privado `obf_inscrito` (menu "Newsletter" no
+  admin), envia e-mail ao admin, valida duplicados e mostra feedback na home
+- Removido handler JS demo que impedia o envio real da newsletter
+- CSS: blocos de feedback para contato e newsletter (cores da paleta)
+- Plugins instalados no ambiente Docker (prontos para credenciais):
+  - Brazilian Market on WooCommerce v4.0.2 (campos BR no checkout)
+  - PagBank Connect v4.57.0 (Pix, cartão, boleto — sucessor do PagSeguro)
+  - Melhor Envio v2.16.6 (frete BR sem contrato, Mini Envios + PAC)
+- Documentação atualizada: seção de plugins e formulário de contato
 
 ### v1.3.0 — 26/08/2026
 - Categorias dos 26 produtos corrigidas (ETB:7, Displays:2, Blisters:4,

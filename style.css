@@ -2082,3 +2082,48 @@ ul.products li.product .button:hover { box-shadow: var(--shadow-glow-mint); colo
     border-radius: 0 0 var(--radius-md) 0;
 }
 .skip-link:focus { left: 0; }
+
+/* ============================================================
+   Contato - feedback
+   ============================================================ */
+
+.obf-feedback {
+    margin-bottom: var(--space-5);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+.obf-feedback p { margin: 0 0 var(--space-1); }
+.obf-feedback p:last-child { margin-bottom: 0; }
+.obf-feedback ul { margin: var(--space-1) 0 0; padding-left: 1.2em; }
+
+.obf-feedback--ok {
+    background: rgba(67, 198, 161, 0.14);
+    border-color: var(--celebi-mint, #43C6A1);
+    color: var(--celebi-green, #80E0A8);
+}
+
+.obf-feedback--erro {
+    background: rgba(230, 103, 158, 0.14);
+    border-color: var(--shiny-pink, #E6679E);
+    color: var(--shiny-pink, #E6679E);
+}
+
+.obf-feedback--info {
+    background: rgba(126, 48, 138, 0.16);
+    border-color: var(--psychic-purple, #7E308A);
+    color: var(--celebi-green, #80E0A8);
+}
+
+/* ============================================================
+   Newsletter - feedback
+   ============================================================ */
+
+.cta-band .obf-feedback {
+    max-width: 480px;
+    margin-inline: auto;
+    margin-top: var(--space-4);
+    text-align: left;
+}

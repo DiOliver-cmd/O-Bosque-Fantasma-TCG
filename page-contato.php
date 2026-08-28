@@ -94,16 +94,39 @@ $obf_discord   = 'https://discord.gg/obosquefantasma';
 
         <?php
         /*
-         * Formulário de contato — placeholder estilizado.
-         *
-         * Para ativar o envio real, conecte este formulário a um plugin de formulários
-         * (recomendado: Contact Form 7 ou WPForms) substituindo o bloco abaixo pelo
-         * shortcode do plugin, ou implemente um handler próprio via admin-ajax
-         * (action "obf_contato") no functions.php do tema.
+         * Formulário de contato — handler real via admin-post (action "obf_contato").
+         * Implementado em functions.php (obf_handle_contato).
          */
+
+        $obf_contato_status = isset( $_GET['status'] ) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : '';
+        $obf_contato_erros  = get_transient( 'obf_contato_erros_' . COOKIEHASH );
+
+        if ( 'ok' === $obf_contato_status ) :
+            ?>
+            <div class="obf-feedback obf-feedback--ok" role="status">
+                <?php esc_html_e( 'Mensagem enviada com sucesso! Em breve entraremos em contato.', 'o-bosque-fantasma' ); ?>
+            </div>
+            <?php
+        elseif ( 'erro' === $obf_contato_status ) :
+            ?>
+            <div class="obf-feedback obf-feedback--erro" role="alert">
+                <p><?php esc_html_e( 'Não foi possível enviar sua mensagem.', 'o-bosque-fantasma' ); ?></p>
+                <?php if ( $obf_contato_erros && is_array( $obf_contato_erros ) ) : ?>
+                    <ul>
+                        <?php foreach ( $obf_contato_erros as $obf_erro ) : ?>
+                            <li><?php echo esc_html( $obf_erro ); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
+            <?php
+            if ( $obf_contato_erros ) {
+                delete_transient( 'obf_contato_erros_' . COOKIEHASH );
+            }
+        endif;
         ?>
         <form class="contact-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-            <?php wp_nonce_field( 'obf_contato', 'obf_contato_nonce' ); ?>
+            <?php wp_nonce_field( 'obf_contato_action', 'obf_contato_nonce' ); ?>
             <input type="hidden" name="action" value="obf_contato">
 
             <div class="contact-form__row">
