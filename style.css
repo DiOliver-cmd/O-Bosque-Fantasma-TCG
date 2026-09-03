@@ -367,6 +367,23 @@ label {
     font-weight: 500;
 }
 
+/* Visible focus for keyboard users (links, buttons, interactive). */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--accent-mint);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+/* Keep inputs' existing glow focus but ensure outline fallback. */
+input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--accent-mint);
+    outline-offset: 0;
+}
+
 /* ============================================================
    Header
    ============================================================ */
@@ -518,14 +535,15 @@ label {
     color: #fff;
     font-size: var(--fs-xs);
     font-weight: 700;
-    min-width: 18px;
-    height: 18px;
+    min-width: 20px;
+    height: 20px;
     border-radius: var(--radius-pill);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0 5px;
-    box-shadow: var(--shadow-glow-pink);
+    padding: 0 6px;
+    box-shadow: var(--shadow-glow-pink), 0 0 0 2px var(--shadow-black);
+    line-height: 1;
 }
 
 .menu-toggle {
@@ -549,6 +567,54 @@ label {
 .menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
 .menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
 .menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* ============================================================
+   Search toggle (mobile) + nav backdrop
+   ============================================================ */
+
+/* Icon-only button shown on mobile in place of the inline search pill. */
+.search-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.search-toggle:hover,
+.search-toggle:focus-visible {
+    border-color: var(--accent-mint);
+    color: var(--accent-mint);
+    box-shadow: var(--shadow-glow-mint);
+}
+.search-toggle[aria-expanded="true"] {
+    color: var(--accent-mint);
+    border-color: var(--accent-mint);
+    background: rgba(67, 198, 161, 0.08);
+}
+
+/* Scrim behind the mobile drawer and search overlay — closes on tap. */
+.nav-backdrop {
+    position: fixed;
+    inset: 0;
+    top: var(--header-h);
+    background: rgba(8, 8, 10, 0.65);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--dur) var(--ease), visibility var(--dur) var(--ease);
+    z-index: 90;
+}
+.nav-backdrop.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
 
 /* ============================================================
    Hero
@@ -1969,6 +2035,45 @@ ul.products li.product .button:hover { box-shadow: var(--shadow-glow-mint); colo
 @media (max-width: 768px) {
     :root { --header-h: 64px; }
 
+    /* --- Mobile search: toggle + overlay panel --- */
+    /* Hide the inline pill form, show the icon toggle. */
+    .search-toggle { display: inline-flex; }
+    .header-search {
+        position: fixed;
+        top: var(--header-h);
+        left: 0;
+        right: 0;
+        z-index: 95;
+        padding: var(--space-4);
+        background: rgba(20, 20, 20, 0.98);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(67, 198, 161, 0.25);
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55), 0 0 24px rgba(67, 198, 161, 0.18);
+        transform: translateY(-14px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease), visibility var(--dur) var(--ease);
+    }
+    .header-search.is-open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    .header-search input {
+        width: 100%;
+        flex: 1;
+        font-size: var(--fs-base);
+        padding: var(--space-3) var(--space-2);
+    }
+    .header-search button {
+        min-width: 44px;
+        min-height: 44px;
+        padding: var(--space-2);
+    }
+
+    /* --- Mobile drawer --- */
     .primary-nav {
         position: fixed;
         inset: var(--header-h) 0 0 0;
@@ -1983,6 +2088,7 @@ ul.products li.product .button:hover { box-shadow: var(--shadow-glow-mint); colo
         width: 80%;
         max-width: 320px;
         margin-left: auto;
+        z-index: 100;
     }
     .primary-nav.is-open { transform: translateX(0); box-shadow: -20px 0 60px rgba(0,0,0,0.6); }
     .primary-nav ul { flex-direction: column; gap: var(--space-4); width: 100%; }
@@ -1995,7 +2101,17 @@ ul.products li.product .button:hover { box-shadow: var(--shadow-glow-mint); colo
     .nav-item--has-dropdown:hover .nav-dropdown,
     .nav-item--has-dropdown:focus-within .nav-dropdown { /* hover/focus-within disabled on mobile */ }
 
-    .nav-item__trigger { width: 100%; justify-content: space-between; padding: var(--space-3) var(--space-2); font-size: var(--fs-base); }
+    /* Touch targets: nav links ≥ 44px tall. */
+    .primary-nav a,
+    .nav-item__trigger {
+        min-height: 44px;
+        padding: var(--space-3) var(--space-2);
+        font-size: var(--fs-base);
+        display: flex;
+        align-items: center;
+    }
+    .nav-item__trigger { width: 100%; justify-content: space-between; }
+    .nav-dropdown a { padding: var(--space-3) var(--space-4); min-height: 44px; }
     .nav-item__chevron { transition: transform var(--dur) var(--ease); }
 
     .nav-dropdown {
@@ -2024,18 +2140,32 @@ ul.products li.product .button:hover { box-shadow: var(--shadow-glow-mint); colo
         transform: translateY(0);
         max-height: 480px;
     }
-    .nav-dropdown a { padding: var(--space-3) var(--space-4); }
+
+    /* --- Touch targets: header actions ≥ 44px --- */
+    .menu-toggle { width: 44px; height: 44px; }
+    .cart-link { min-height: 44px; padding: var(--space-3); }
+    .header-actions { gap: var(--space-2); }
 
     .menu-toggle { display: flex; }
-    .header-search { display: none; }
 
-    .site-footer__grid { grid-template-columns: 1fr; }
+    /* Footer: 2 col on tablets, drops to 1 col below 480px. */
+    .site-footer__grid { grid-template-columns: 1fr 1fr; gap: var(--space-5); }
     .site-footer__bottom { flex-direction: column; text-align: center; }
 
-    .grid--products { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-    ul.products { grid-template-columns: repeat(2, 1fr); }
+    /* Product grids: 2 columns is the e-commerce mobile standard. */
+    .grid--products { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+    ul.products { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+
+    /* Compact product cards on mobile. */
+    .product-card__body { padding: var(--space-3); gap: var(--space-2); }
+    .product-card__name { font-size: var(--fs-base); }
+    .product-card__price { font-size: var(--fs-md); }
+    .product-card__media img { padding: var(--space-3); }
+    /* Add-to-cart button on cards: full touch target. */
+    .product-card .btn--sm { min-height: 44px; padding: var(--space-3) var(--space-2); font-size: var(--fs-sm); }
 
     .cta-band__form { flex-direction: column; }
+    .cta-band__form .btn { min-height: 44px; }
     .hero__stats { gap: var(--space-4); }
 
     .page-sobre-hero { min-height: auto; padding: var(--space-8) 0 var(--space-7); }
@@ -2054,9 +2184,38 @@ ul.products li.product .button:hover { box-shadow: var(--shadow-glow-mint); colo
     h2 { font-size: var(--fs-xl); }
 }
 
+@media (max-width: 600px) {
+    /* Footer collapses to a single column on phones. */
+    .site-footer__grid { grid-template-columns: 1fr; gap: var(--space-6); }
+}
+
 @media (max-width: 480px) {
-    .grid--products, ul.products { grid-template-columns: 1fr; }
+    /* Keep 2 product columns even on the smallest screens — 1 col is too wide. */
+    .grid--products, ul.products { grid-template-columns: repeat(2, 1fr); gap: var(--space-2); }
+
     .cart-link__label { display: none; }
+
+    /* Hero title: fluid down so Cinzel doesn't break awkwardly at 320–375px. */
+    .hero { min-height: auto; padding: var(--space-8) 0; }
+    .hero__title.display-title {
+        font-size: clamp(2rem, 9vw, 2.75rem);
+        text-shadow: 0 0 28px rgba(67, 198, 161, 0.2);
+    }
+    .hero__tagline { font-size: var(--fs-base); }
+    .hero__stats { gap: var(--space-3); }
+    .hero__stat strong { font-size: var(--fs-lg); }
+    .hero__stat span { font-size: var(--fs-xs); }
+
+    /* Tighten product cards on very narrow screens. */
+    .product-card__body { padding: var(--space-2); }
+    .product-card__name { font-size: var(--fs-sm); line-height: 1.2; }
+    .product-card__meta { font-size: 0.65rem; }
+    .product-card__price { font-size: var(--fs-sm); }
+    .product-card .btn--sm { font-size: var(--fs-xs); padding: var(--space-2); }
+
+    /* Section breathing on small phones. */
+    .section { padding: var(--space-7) 0; }
+    .cta-band { padding: var(--space-5); }
 }
 
 /* Reduced motion */

@@ -117,6 +117,13 @@
         <div class="header-actions">
             <?php get_search_form( array( 'echo' => true ) ); ?>
 
+            <button class="search-toggle" id="search-toggle" aria-expanded="false" aria-label="<?php esc_attr_e( 'Abrir busca', 'o-bosque-fantasma' ); ?>">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+
             <?php if ( function_exists( 'woocommerce_get_page_id' ) ) : ?>
                 <a class="cart-link" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Ver carrinho', 'o-bosque-fantasma' ); ?>">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -138,5 +145,7 @@
 
     </div>
 </header>
+
+<div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
 
 <main id="main" class="site-main">

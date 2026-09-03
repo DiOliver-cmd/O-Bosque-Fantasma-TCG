@@ -14,6 +14,9 @@
     var header = document.getElementById('masthead');
     var menuToggle = document.getElementById('menu-toggle');
     var primaryNav = document.getElementById('primary-nav');
+    var navBackdrop = document.getElementById('nav-backdrop');
+    var searchToggle = document.getElementById('search-toggle');
+    var headerSearch = document.querySelector('.header-search');
     var heroFog = document.querySelector('.hero__fog');
     var heroRings = document.querySelector('.hero__rings');
 
@@ -30,29 +33,91 @@
     onScrollHeader();
 
     /* ---------- Mobile menu toggle ---------- */
+    function openMenu() {
+        if (!menuToggle || !primaryNav) { return; }
+        menuToggle.setAttribute('aria-expanded', 'true');
+        primaryNav.classList.add('is-open');
+        if (navBackdrop) { navBackdrop.classList.add('is-visible'); }
+        document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+        if (!menuToggle || !primaryNav) { return; }
+        menuToggle.setAttribute('aria-expanded', 'false');
+        primaryNav.classList.remove('is-open');
+        if (navBackdrop) { navBackdrop.classList.remove('is-visible'); }
+        document.body.style.overflow = '';
+    }
+
     if (menuToggle && primaryNav) {
         menuToggle.addEventListener('click', function () {
-            var expanded = menuToggle.getAttribute('aria-expanded') === 'true';
-            menuToggle.setAttribute('aria-expanded', String(!expanded));
-            primaryNav.classList.toggle('is-open', !expanded);
-            document.body.style.overflow = !expanded ? 'hidden' : '';
+            if (primaryNav.classList.contains('is-open')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
         });
 
         // Close menu when a link is clicked (mobile).
         primaryNav.addEventListener('click', function (e) {
             if (e.target.tagName === 'A') {
-                menuToggle.setAttribute('aria-expanded', 'false');
-                primaryNav.classList.remove('is-open');
-                document.body.style.overflow = '';
+                closeMenu();
             }
         });
+
+        // Close on backdrop tap.
+        if (navBackdrop) {
+            navBackdrop.addEventListener('click', closeMenu);
+        }
 
         // Close on Escape.
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && primaryNav.classList.contains('is-open')) {
-                menuToggle.setAttribute('aria-expanded', 'false');
-                primaryNav.classList.remove('is-open');
-                document.body.style.overflow = '';
+                closeMenu();
+            }
+        });
+    }
+
+    /* ---------- Mobile search toggle ---------- */
+    function openSearch() {
+        if (!searchToggle || !headerSearch) { return; }
+        searchToggle.setAttribute('aria-expanded', 'true');
+        headerSearch.classList.add('is-open');
+        if (navBackdrop) { navBackdrop.classList.add('is-visible'); }
+        var field = headerSearch.querySelector('input[type="search"]');
+        if (field) { setTimeout(function () { field.focus(); }, 60); }
+    }
+    function closeSearch() {
+        if (!searchToggle || !headerSearch) { return; }
+        searchToggle.setAttribute('aria-expanded', 'false');
+        headerSearch.classList.remove('is-open');
+        // Only remove the backdrop if the menu is also closed.
+        if (navBackdrop && (!primaryNav || !primaryNav.classList.contains('is-open'))) {
+            navBackdrop.classList.remove('is-visible');
+        }
+    }
+
+    if (searchToggle && headerSearch) {
+        searchToggle.addEventListener('click', function () {
+            if (headerSearch.classList.contains('is-open')) {
+                closeSearch();
+            } else {
+                openSearch();
+            }
+        });
+
+        // Close search when the form is submitted.
+        headerSearch.addEventListener('submit', closeSearch);
+
+        // Close on backdrop tap (already wired to closeMenu; also close search).
+        if (navBackdrop) {
+            navBackdrop.addEventListener('click', closeSearch);
+        }
+
+        // Close on Escape.
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && headerSearch.classList.contains('is-open')) {
+                closeSearch();
+                searchToggle.focus();
             }
         });
     }

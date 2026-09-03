@@ -12,7 +12,7 @@ Atmosfera escura, mística e premium — sem cartoon.
 - **Autora:** Dilaine Ferreira de Oliveira
 - **GitHub:** [@DiOliver-cmd](https://github.com/DiOliver-cmd)
 - **Repositório:** [O-Bosque-Fantasma-TCG](https://github.com/DiOliver-cmd/O-Bosque-Fantasma-TCG)
-- **Versão:** 1.4.0
+- **Versão:** 1.5.0
 - **Requer WordPress:** 6.0+
 - **Requer PHP:** 7.4+
 - **WooCommerce:** 8.x
@@ -219,7 +219,7 @@ O tema inclui **custom page templates** prontos para uso. Crie uma página em
 - **Melhor Envio** (`melhor-envio-cotacao`) — frete BR sem contrato Correios
   (Correios/Jadlog com desconto, Mini Envios). Já instalado no Docker; requer
   conta Melhor Envio + token + CEP de origem.
-- **Yoast SEO** ou **Rank Math** — SEO.
+- **Yoast SEO** ou **Rank Math** — SEO. **Rank Math já instalado e configurado** no ambiente Docker (meta tags OG, Twitter Cards, JSON-LD schema, sitemap XML).
 - **WP Rocket** ou **LiteSpeed Cache** — performance.
 - **Smush** ou **ShortPixel** — otimização de imagens.
 
@@ -319,6 +319,32 @@ o-bosque-fantasma/
 ---
 
 ## Changelog
+
+### v1.5.0 — 03/09/2026
+- **SEO configurado:** Rank Math SEO v1.0.277.2 instalado e configurado
+  - Meta tags OG, Twitter Cards, JSON-LD schema (Organization, WebSite,
+    WebPage, Article, Product) injetados no frontend
+  - Sitemap XML ativo em `/sitemap_index.xml` (post, page, product,
+    category, product_cat)
+  - Título e descrição SEO da home configurados
+  - Logo importado para a Media Library (schema Organization)
+  - Locale do WordPress corrigido para `pt_BR` (inLanguage: pt-BR)
+- **Revisão mobile completa:**
+  - Busca mobile: botão lupa (44×44px) + overlay expansível substitui o
+    `display: none` que escondia a busca em mobile
+  - Backdrop/scrim semi-transparente atrás do drawer do menu e da busca
+    (fecha ao toque)
+  - Grid de produtos: 2 colunas em todos os breakpoints mobile (antes 1
+    coluna em ≤480px — largo demais)
+  - Touch targets ≥ 44px em todos os elementos interativos mobile
+    (menu-toggle, search-toggle, cart-link, nav links, botões de card)
+  - Hero: título fluido com `clamp()` em ≤480px (não estoura em 320-375px)
+  - Footer: 2 colunas em 768px (antes 1 col), colapsa para 1 col em ≤600px
+  - Cart count badge: 20×20px + ring de contraste
+  - Focus states acessíveis (`:focus-visible` com outline mint)
+  - Cards de produto compactados progressivamente em 768px e 480px
+- **Breakpoints novos:** 600px (footer), 480px reescrito (hero, cards, seções)
+- **Timezone:** `America/Sao_Paulo` configurada no WordPress
 
 ### v1.4.0 — 28/08/2026
 - Formulário de contato funcional: handler `admin-post` nativo em
